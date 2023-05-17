@@ -4,14 +4,14 @@
 
 package dev.icerock.moko.tensorflow
 
-import cocoapods.TFLTensorFlowLite.TFLTensorDataType
+import dev.icerock.moko.tensorflow.maping.ObjcDataTypeMapper
 import platform.Foundation.NSNumber
 
 actual class Tensor(
     internal val platformTensor: PlatformTensor
 ) {
     actual val dataType: TensorDataType
-        get() = platformTensor.dataType.toTensorDataType()
+        get() = platformTensor.dataType.let(ObjcDataTypeMapper::map)
 
     actual val name: String
         get() = platformTensor.name()
@@ -26,21 +26,4 @@ actual class Tensor(
                 it.unsignedIntValue().toInt()
             }.toIntArray()
         }
-}
-
-private fun TFLTensorDataType.toTensorDataType() = when (this) {
-    TFLTensorDataType.TFLTensorDataTypeFloat32 -> TensorDataType.FLOAT32
-    TFLTensorDataType.TFLTensorDataTypeInt32 -> TensorDataType.INT32
-    TFLTensorDataType.TFLTensorDataTypeUInt8 -> TensorDataType.UINT8
-    TFLTensorDataType.TFLTensorDataTypeInt64 -> TensorDataType.INT64
-    TFLTensorDataType.TFLTensorDataTypeInt16 -> TensorDataType.INT16
-    TFLTensorDataType.TFLTensorDataTypeInt8 -> TensorDataType.INT8
-    TFLTensorDataType.TFLTensorDataTypeBool ->
-        throw IllegalArgumentException("TFLTensorDataTypeFloat16 not supported.")
-    TFLTensorDataType.TFLTensorDataTypeFloat16 ->
-        throw IllegalArgumentException("TFLTensorDataTypeFloat16 not supported.")
-    TFLTensorDataType.TFLTensorDataTypeNoType ->
-        throw IllegalArgumentException("TFLTensorDataTypeNoType: wrong tensor type.")
-
-    else -> throw IllegalArgumentException("unknown TFLTensorDataType - $this")
 }

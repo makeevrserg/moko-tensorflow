@@ -5,6 +5,7 @@
 package dev.icerock.moko.tensorflow
 
 import dev.icerock.moko.resources.FileResource
+import dev.icerock.moko.tensorflow.maping.tensor.Float32TensorDataMapper
 import platform.Foundation.NSData
 
 @Suppress("ForbiddenComment")
@@ -12,17 +13,17 @@ actual class Interpreter(
     actual val fileResource: FileResource,
     actual val options: InterpreterOptions
 ) {
-
+    /**
+     * TODO remove comment after pr review
+     * Maybe we can join declaration and assignment? Or it's made on purpose?
+     */
     private val tflInterpreter: PlatformInterpreter
 
     init {
         tflInterpreter = errorHandled { errPtr ->
             PlatformInterpreter(fileResource.path, options.tflInterpreterOptions, errPtr)
         }!!
-
-        errorHandled { errPtr ->
-            tflInterpreter.allocateTensorsWithError(errPtr)
-        }
+        errorHandled(tflInterpreter::allocateTensorsWithError)
     }
 
     /**
@@ -105,16 +106,8 @@ actual class Interpreter(
             val outputTensor = getOutputTensor(index)
 
             val array = when (outputTensor.dataType) {
-                TensorDataType.FLOAT32 -> {
-                    errorHandled { errPtr ->
-                        outputTensor.platformTensor.dataWithError(errPtr)
-                    }!!.toUByteArray().toFloatArray()
-                }
-                TensorDataType.INT32 -> IntArray(outputTensor.dataType.byteSize()) // Fixme:
-                TensorDataType.UINT8 -> UIntArray(outputTensor.dataType.byteSize()) // Fixme:
-                TensorDataType.INT64 -> LongArray(outputTensor.dataType.byteSize()) // Fixme:
-                TensorDataType.INT16 -> ShortArray(outputTensor.dataType.byteSize()) // TODO()
-                TensorDataType.INT8 -> ByteArray(outputTensor.dataType.byteSize()) // TODO()
+                TensorDataType.FLOAT32 -> Float32TensorDataMapper.map(outputTensor)
+                else -> error("${outputTensor.dataType} is not implemented")
             }
 
             (outputs[0] as Array<Any>)[0] =
