@@ -117,15 +117,15 @@ class MainActivity : AppCompatActivity() {
 `iOS`:
 ```swift
 class ViewController: UIViewController {
-    private var interpreter: TensorflowInterpreter?
+    private var interpreter: Interpreter?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let options: TensorflowInterpreterOptions = TensorflowInterpreterOptions(numThreads: 2)
+        let options: InterpreterOptions = InterpreterOptions(numThreads: 2)
         let modelFileRes: ResourcesFileResource = ResHolder().getModelFile()
         
-        interpreter = TensorflowInterpreter(fileResource: modelFileRes, options: options)
+        interpreter = Interpreter(fileResource: modelFileRes, options: options)
         let classifier = Classifier(interpreter: interpreter!)
 
         classifier.classify(data)
@@ -143,6 +143,7 @@ Please see more examples in the [sample directory](sample).
 ## Set Up Locally 
 - The [tensorflow directory](tensorflow) contains the `tensorflow` library;
 - The [sample directory](sample) contains sample apps for Android and iOS; plus the mpp-library connected to the apps;
+- Before gradle sync execute `cd ./sample/ios-app && pod install` to load Pods
 - For local testing a use the `./publishToMavenLocal.sh` script - so that sample apps use the locally published version.
 
 ## Contributing
