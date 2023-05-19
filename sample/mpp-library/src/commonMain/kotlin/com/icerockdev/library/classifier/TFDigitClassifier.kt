@@ -5,6 +5,7 @@
 package com.icerockdev.library.classifier
 
 import dev.icerock.moko.tensorflow.Interpreter
+import dev.icerock.moko.tensorflow.TensorShape
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -28,8 +29,13 @@ class TFDigitClassifier(
         modelInputSize = FLOAT_TYPE_SIZE * inputImageWidth * inputImageHeight * PIXEL_SIZE
     }
 
-    fun classifyAsync(inputData: Any, onResult: suspend CoroutineScope.(String) -> Unit) {
+    fun classifyAsync(inputData: Any, onResult: (String) -> Unit) {
         scope.launch(Dispatchers.Default) {
+            val batchIndex = DigitClassifier.inputTensorIndex
+            val inputShape = DigitClassifier.inputShape(1)
+            interpreter.resizeInput(batchIndex, inputShape.let(::TensorShape))
+            interpreter.allocateTensors()
+
             val result = Array(1) { FloatArray(OUTPUT_CLASSES_COUNT) }
             interpreter.run(listOf(inputData), mapOf(Pair(0, result)))
 

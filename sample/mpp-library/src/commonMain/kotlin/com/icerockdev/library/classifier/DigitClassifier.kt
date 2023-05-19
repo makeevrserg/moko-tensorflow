@@ -13,6 +13,8 @@ interface DigitClassifier : Classifier<Input, Output> {
      * This function will run [Classifier.classify] and return DTO state [MappedResult]
      */
     fun process(input: Input): List<MappedResult>
+    fun processRandomData(batchSize: Int): String
+
     val inputImageWidth: Int
     val inputImageHeight: Int
 

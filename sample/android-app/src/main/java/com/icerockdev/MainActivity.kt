@@ -97,7 +97,7 @@ class MainActivity : AppCompatActivity() {
         }
         val input = BitmapConverter.convertBitmapToByteBuffer(tfDigitClassifier, bitmapToClassify)
         tfDigitClassifier.classifyAsync(input) {
-            withContext(Dispatchers.Main) {
+            runOnUiThread {
                 predictedTFTextView.text = it
             }
         }

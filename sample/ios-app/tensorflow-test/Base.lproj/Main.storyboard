@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="16096" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="System colors in document resources" minToolsVersion="11.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
@@ -15,7 +17,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ffv-jp-Jfp">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Ffv-jp-Jfp">
                                 <rect key="frame" x="177" y="818" width="60" height="44"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="26"/>
                                 <state key="normal" title="Clear"/>
@@ -24,29 +26,49 @@
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Please draw a digit." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XcF-hF-8rl">
-                                <rect key="frame" x="107" y="538" width="200" height="29"/>
+                                <rect key="frame" x="108" y="542" width="198.5" height="29"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="24"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1yR-xe-2ly" customClass="SketchView" customModule="Sketch">
-                                <rect key="frame" x="0.0" y="44" width="414" height="414"/>
+                                <rect key="frame" x="0.0" y="48" width="414" height="414"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="1yR-xe-2ly" secondAttribute="height" multiplier="1:1" id="RCi-rl-Rt7"/>
                                 </constraints>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="FRI-ic-4W7">
+                                <rect key="frame" x="89.5" y="775" width="235" height="35"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Process random single data"/>
+                                <connections>
+                                    <action selector="tapProcessRandomData:" destination="BYZ-38-t0r" eventType="touchUpInside" id="0It-js-Qkq"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="bXQ-7K-qUc">
+                                <rect key="frame" x="101" y="732" width="212" height="35"/>
+                                <state key="normal" title="Button"/>
+                                <buttonConfiguration key="configuration" style="plain" title="Process random list data"/>
+                                <connections>
+                                    <action selector="tapProcessRandomList:" destination="BYZ-38-t0r" eventType="touchUpInside" id="r83-Ye-AUA"/>
+                                </connections>
+                            </button>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="FRI-ic-4W7" firstAttribute="top" secondItem="bXQ-7K-qUc" secondAttribute="bottom" constant="8" id="1So-E8-Rlr"/>
+                            <constraint firstItem="bXQ-7K-qUc" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="2RN-wF-ihl"/>
                             <constraint firstItem="1yR-xe-2ly" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="6EU-Yg-0PK"/>
                             <constraint firstItem="Ffv-jp-Jfp" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="6ny-RW-mc2"/>
                             <constraint firstItem="1yR-xe-2ly" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="BSO-0L-P5J"/>
                             <constraint firstItem="XcF-hF-8rl" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="MRB-Cv-2vc"/>
                             <constraint firstItem="1yR-xe-2ly" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" id="Vfi-23-Q1O"/>
                             <constraint firstItem="XcF-hF-8rl" firstAttribute="top" secondItem="1yR-xe-2ly" secondAttribute="bottom" constant="80" id="a2W-8Z-R4V"/>
+                            <constraint firstItem="Ffv-jp-Jfp" firstAttribute="top" secondItem="FRI-ic-4W7" secondAttribute="bottom" constant="8" id="snb-pN-Ser"/>
+                            <constraint firstItem="FRI-ic-4W7" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="wST-fk-65L"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Ffv-jp-Jfp" secondAttribute="bottom" id="zEZ-tj-lDA"/>
                         </constraints>
-                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
                     <connections>
                         <outlet property="resultLabel" destination="XcF-hF-8rl" id="nTt-sH-WWM"/>
@@ -58,4 +80,9 @@
             <point key="canvasLocation" x="139" y="138"/>
         </scene>
     </scenes>
+    <resources>
+        <systemColor name="systemBackgroundColor">
+            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+        </systemColor>
+    </resources>
 </document>

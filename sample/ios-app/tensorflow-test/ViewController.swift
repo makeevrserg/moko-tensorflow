@@ -13,6 +13,7 @@ class ViewController: UIViewController, SketchViewDelegate {
     
     private var interpreter: Interpreter?
     private var tfDigitClassifier: TFDigitClassifier?
+    private var customDigitClassifier: DigitClassifier?
     
     private var isInterpreterInited: Bool = false
     private var scope: MainCoroutineScope?
@@ -34,8 +35,7 @@ class ViewController: UIViewController, SketchViewDelegate {
             options: options
         )
         tfDigitClassifier = TFDigitClassifier(interpreter: interpreter!, scope: scope!)
-        
-        tfDigitClassifier?.initialize()
+        customDigitClassifier = DefaultDigitClassifier(interpreter: interpreter!)
         self.isInterpreterInited = true
     }
     
@@ -43,6 +43,16 @@ class ViewController: UIViewController, SketchViewDelegate {
     deinit {
         scope?.close()
         interpreter?.close()
+    }
+
+    @IBAction func tapProcessRandomData(_ sender: Any) {
+        let result = customDigitClassifier?.processRandomData(batchSize: 1)
+        resultLabel.text = result
+        
+    }
+    @IBAction func tapProcessRandomList(_ sender: Any) {
+        let result = customDigitClassifier?.processRandomData(batchSize: 2)
+        resultLabel.text = result
     }
 
     @IBAction func tapClear(_ sender: Any) {
