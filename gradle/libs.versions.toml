@@ -11,8 +11,15 @@ coreKtxVersion = "1.10.1"
 playServicesVersion = "18.0.2"
 androidDrawVersion = "v0.1"
 lifecycleRuntimeVersion = "2.6.1"
+# Tests
+tests-junit-core = "4.13.2"
+tests-junit-ext = "1.1.5"
 
 [libraries]
+# Tests
+tests-junit = { module = "junit:junit", version.strictly = "4.13.2" }
+tests-junitExt = { module = "androidx.test.ext:junit", version.strictly = "1.1.5" }
+tests-espressoCore = { module = "androidx.test.espresso:espresso-core", version.strictly = "3.5.1" }
 appCompat = { module = "androidx.appcompat:appcompat", version = "1.6.1" }
 kotlinStdLib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinVersion" }
 constraintLayout = { module = "androidx.constraintlayout:constraintlayout", version = "2.1.4" }

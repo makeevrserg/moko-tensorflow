@@ -16,6 +16,7 @@ android {
 
         versionCode = 1
         versionName = "0.1.0"
+        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 }
 
@@ -31,4 +32,9 @@ dependencies {
     implementation(libs.lifecycleRuntime)
 
     implementation(projects.sample.mppLibrary)
+
+    // Tests
+    testImplementation(libs.tests.junit)
+    androidTestImplementation(libs.tests.junitExt)
+    androidTestImplementation(libs.tests.espressoCore)
 }

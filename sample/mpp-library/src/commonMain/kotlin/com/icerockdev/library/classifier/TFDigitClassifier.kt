@@ -2,7 +2,7 @@
  * Copyright 2020 IceRock MAG Inc. Use of this source code is governed by the Apache 2.0 license.
  */
 
-package com.icerockdev.library
+package com.icerockdev.library.classifier
 
 import dev.icerock.moko.tensorflow.Interpreter
 import kotlinx.coroutines.CoroutineScope
@@ -21,14 +21,14 @@ class TFDigitClassifier(
     var modelInputSize: Int = 0 // will be inferred from TF Lite model
         private set
 
-    fun initialize() {
+    init {
         val inputShape = interpreter.getInputTensor(0).shape
         inputImageWidth = inputShape[1]
         inputImageHeight = inputShape[2]
         modelInputSize = FLOAT_TYPE_SIZE * inputImageWidth * inputImageHeight * PIXEL_SIZE
     }
 
-    fun classifyAsync(inputData: Any, onResult: (String) -> Unit) {
+    fun classifyAsync(inputData: Any, onResult: suspend CoroutineScope.(String) -> Unit) {
         scope.launch(Dispatchers.Default) {
             val result = Array(1) { FloatArray(OUTPUT_CLASSES_COUNT) }
             interpreter.run(listOf(inputData), mapOf(Pair(0, result)))

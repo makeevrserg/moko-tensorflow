@@ -13,13 +13,15 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.divyanshu.draw.widget.DrawView
+import com.icerockdev.library.classifier.DefaultDigitClassifier
+import com.icerockdev.library.classifier.DigitClassifier
+import com.icerockdev.library.classifier.TFDigitClassifier
 import com.icerockdev.library.ResHolder
-import com.icerockdev.library.TFDigitClassifier
 import dev.icerock.moko.tensorflow.Interpreter
 import dev.icerock.moko.tensorflow.InterpreterOptions
-import java.nio.ByteBuffer
-import java.nio.ByteOrder
-import java.util.concurrent.atomic.AtomicBoolean
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Suppress("MagicNumber")
 class MainActivity : AppCompatActivity() {
@@ -27,11 +29,20 @@ class MainActivity : AppCompatActivity() {
     private lateinit var drawView: DrawView
     private lateinit var clearButton: Button
     private lateinit var predictedTextView: TextView
+    private lateinit var predictedTFTextView: TextView
 
-    private lateinit var interpreter: Interpreter
-    private lateinit var digitClassifier: TFDigitClassifier
-
-    private val isInterpreterInited = AtomicBoolean(false)
+    private val interpreter: Interpreter by lazy {
+        Interpreter(ResHolder.getDigitsClassifierModel(), InterpreterOptions(2, useNNAPI = true), this)
+    }
+    private val digitClassifier: DigitClassifier by lazy {
+        DefaultDigitClassifier(interpreter)
+    }
+    private val tfinterpreter: Interpreter by lazy {
+        Interpreter(ResHolder.getDigitsClassifierModel(), InterpreterOptions(2, useNNAPI = true), this)
+    }
+    private val tfDigitClassifier: TFDigitClassifier by lazy {
+        TFDigitClassifier(tfinterpreter, lifecycleScope)
+    }
 
     @Suppress("UnnecessarySafeCall")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -44,10 +55,12 @@ class MainActivity : AppCompatActivity() {
         drawView.setBackgroundColor(Color.BLACK)
         clearButton = findViewById(R.id.clear_button)
         predictedTextView = findViewById(R.id.predicted_text)
+        predictedTFTextView = findViewById(R.id.predicted_text_tf)
 
         clearButton.setOnClickListener {
             drawView.clearCanvas()
             predictedTextView.text = "Please draw a digit"
+            predictedTFTextView.text = "Please draw a digit"
         }
 
         drawView?.setOnTouchListener { _, event ->
@@ -59,12 +72,6 @@ class MainActivity : AppCompatActivity() {
 
             true
         }
-
-        interpreter = Interpreter(ResHolder.getDigitsClassifierModel(), InterpreterOptions(2, useNNAPI = true), this)
-        digitClassifier = TFDigitClassifier(interpreter, this.lifecycleScope)
-
-        digitClassifier.initialize()
-        isInterpreterInited.set(true)
     }
 
     override fun onDestroy() {
@@ -73,8 +80,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun classifyDrawing() {
-        if (!isInterpreterInited.get()) return
-
         val rawBitmap = drawView.getBitmap()
         val bitmapToClassify = Bitmap.createScaledBitmap(
             rawBitmap,
@@ -82,30 +87,21 @@ class MainActivity : AppCompatActivity() {
             digitClassifier.inputImageHeight,
             true
         )
-
-        digitClassifier.classifyAsync(convertBitmapToByteBuffer(bitmapToClassify)) {
-            runOnUiThread {
-                predictedTextView.text = it
+        lifecycleScope.launch(Dispatchers.IO) {
+            val input = BitmapConverter.convertBitmapToArray(bitmapToClassify)
+            val results = digitClassifier.process(input)
+            withContext(Dispatchers.Main) {
+                val result = results.first()
+                predictedTextView.text = "Digit: ${result.digit}\nIndex: ${result.index}\nPercent: ${result.percent}"
+            }
+        }
+        val input = BitmapConverter.convertBitmapToByteBuffer(tfDigitClassifier, bitmapToClassify)
+        tfDigitClassifier.classifyAsync(input) {
+            withContext(Dispatchers.Main) {
+                predictedTFTextView.text = it
             }
         }
     }
 
-    private fun convertBitmapToByteBuffer(bitmap: Bitmap): ByteBuffer {
-        val byteBuffer = ByteBuffer.allocateDirect(digitClassifier.modelInputSize)
-        byteBuffer.order(ByteOrder.nativeOrder())
 
-        val pixels = IntArray(digitClassifier.inputImageWidth * digitClassifier.inputImageHeight)
-        bitmap.getPixels(pixels, 0, bitmap.width, 0, 0, bitmap.width, bitmap.height)
-
-        for (pixelValue in pixels) {
-            val r = (pixelValue shr 16 and 0xFF)
-            val g = (pixelValue shr 8 and 0xFF)
-            val b = (pixelValue and 0xFF)
-
-            val normalizedPixelValue = (r + g + b) / 3.0f / 255.0f
-            byteBuffer.putFloat(normalizedPixelValue)
-        }
-
-        return byteBuffer
-    }
 }
