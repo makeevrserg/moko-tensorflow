@@ -8,7 +8,6 @@ import kotlinx.cinterop.usePinned
 import platform.Foundation.NSData
 import platform.posix.memcpy
 
-
 /**
  * Mapper for [TensorDataType.FLOAT32] type
  */

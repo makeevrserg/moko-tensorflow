@@ -18,6 +18,7 @@ interface DigitClassifier : Classifier<Input, Output> {
     val inputImageWidth: Int
     val inputImageHeight: Int
 
+    @Suppress("MagicNumber")
     class Input(
         val batchSize: Int,
         val array: Array<Array<FloatArray>> = Array(batchSize) {
@@ -25,11 +26,13 @@ interface DigitClassifier : Classifier<Input, Output> {
         }
     )
 
+    @Suppress("MagicNumber")
     class Output(
         val batchSize: Int,
         val rawArray: Array<FloatArray> = Array(batchSize) { FloatArray(10) },
     )
 
+    @Suppress("MagicNumber")
     data class MappedResult(
         val digit: Digit = Digit.ERROR,
         val percent: Float = -1f,
@@ -40,6 +43,7 @@ interface DigitClassifier : Classifier<Input, Output> {
         ZERO, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT, NINE, ERROR
     }
 
+    @Suppress("MagicNumber")
     companion object : Classifier.Options {
         override fun inputShape(batchSize: Int): IntArray {
             return intArrayOf(batchSize, 28, 28)

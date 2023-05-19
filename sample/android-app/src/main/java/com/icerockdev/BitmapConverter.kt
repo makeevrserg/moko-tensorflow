@@ -7,6 +7,7 @@ import java.nio.ByteBuffer
 import java.nio.ByteOrder
 
 object BitmapConverter {
+    @Suppress("MagicNumber")
     private fun normalizePixel(pixelValue: Int): Float {
         val r = (pixelValue shr 16 and 0xFF)
         val g = (pixelValue shr 8 and 0xFF)
@@ -15,6 +16,7 @@ object BitmapConverter {
         return (r + g + b) / 3.0f / 255.0f
     }
 
+    @Suppress("MagicNumber")
     fun convertBitmapToArray(bitmap: Bitmap): DigitClassifier.Input {
         val input = DigitClassifier.Input(1)
         for (x in 0 until bitmap.width) {

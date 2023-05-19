@@ -13,10 +13,10 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.divyanshu.draw.widget.DrawView
+import com.icerockdev.library.ResHolder
 import com.icerockdev.library.classifier.DefaultDigitClassifier
 import com.icerockdev.library.classifier.DigitClassifier
 import com.icerockdev.library.classifier.TFDigitClassifier
-import com.icerockdev.library.ResHolder
 import dev.icerock.moko.tensorflow.Interpreter
 import dev.icerock.moko.tensorflow.InterpreterOptions
 import kotlinx.coroutines.Dispatchers
@@ -87,6 +87,7 @@ class MainActivity : AppCompatActivity() {
             digitClassifier.inputImageHeight,
             true
         )
+        @Suppress("InjectDispatcher")
         lifecycleScope.launch(Dispatchers.IO) {
             val input = BitmapConverter.convertBitmapToArray(bitmapToClassify)
             val results = digitClassifier.process(input)
@@ -102,6 +103,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }

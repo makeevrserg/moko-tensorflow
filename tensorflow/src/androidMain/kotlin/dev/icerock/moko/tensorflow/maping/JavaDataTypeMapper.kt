@@ -29,5 +29,4 @@ object JavaDataTypeMapper : NativeMapper<DataType> {
         TensorDataType.INT16 -> DataType.INT16
         TensorDataType.INT8 -> DataType.INT8
     }
-
 }

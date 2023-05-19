@@ -5,6 +5,6 @@ package com.icerockdev.library.classifier.maping
  *
  * @see DigitMapper
  */
-interface ClassifierMapper<in I: Any, out O: Any> {
-	fun map(output: I, index: Int): O
+interface ClassifierMapper<in I : Any, out O : Any> {
+    fun map(output: I, index: Int): O
 }

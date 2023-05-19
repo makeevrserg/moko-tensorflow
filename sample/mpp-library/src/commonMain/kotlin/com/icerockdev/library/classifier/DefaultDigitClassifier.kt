@@ -26,6 +26,7 @@ class DefaultDigitClassifier(
         }
     }
 
+    @Suppress("MagicNumber")
     override fun processRandomData(batchSize: Int): String {
         val array = Array(batchSize) {
             Array(28) {

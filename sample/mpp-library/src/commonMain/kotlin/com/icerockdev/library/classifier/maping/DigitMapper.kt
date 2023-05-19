@@ -1,8 +1,8 @@
 package com.icerockdev.library.classifier.maping
 
 import com.icerockdev.library.classifier.DigitClassifier
-import com.icerockdev.library.classifier.DigitClassifier.Output
 import com.icerockdev.library.classifier.DigitClassifier.Digit
+import com.icerockdev.library.classifier.DigitClassifier.Output
 
 object DigitMapper : ClassifierMapper<Output, DigitClassifier.MappedResult> {
 
@@ -17,5 +17,4 @@ object DigitMapper : ClassifierMapper<Output, DigitClassifier.MappedResult> {
             index = maxIndex
         )
     }
-
 }
