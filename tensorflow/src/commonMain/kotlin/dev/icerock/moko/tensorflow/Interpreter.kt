@@ -43,6 +43,11 @@ expect class Interpreter {
     fun resizeInput(index: Int, shape: TensorShape)
 
     /**
+     * Allocate tensors after [resizeInput]
+     */
+    fun allocateTensors()
+
+    /**
      * Runs model inference if the model takes multiple inputs, or returns multiple outputs.
      */
     fun run(inputs: List<Any>, outputs: Map<Int, Any>)

@@ -78,6 +78,15 @@ actual class Interpreter(
     }
 
     /**
+     * Allocate tensors after [resizeInput]
+     */
+    actual fun allocateTensors() {
+        errorHandled { errPtr ->
+            tflInterpreter.allocateTensorsWithError(errPtr)
+        }
+    }
+
+    /**
      * Runs model inference if the model takes multiple inputs, or returns multiple outputs.
      *
      * TODO: need to implement [outputs] applying.

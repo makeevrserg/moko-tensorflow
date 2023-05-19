@@ -52,6 +52,13 @@ actual class Interpreter(
     }
 
     /**
+     * Allocate tensors after [resizeInput]
+     */
+    actual fun allocateTensors() {
+        tensorFlowInterpreter.allocateTensors()
+    }
+
+    /**
      * Runs model inference if the model takes multiple inputs, or returns multiple outputs.
      */
     actual fun run(inputs: List<Any>, outputs: Map<Int, Any>) {
