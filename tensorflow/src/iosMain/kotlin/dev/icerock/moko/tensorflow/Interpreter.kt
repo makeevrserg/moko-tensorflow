@@ -95,7 +95,8 @@ actual class Interpreter(
         inputs: List<Any>,
         outputs: Map<Int, Any>
     ) {
-        require(inputs.size > getInputTensorCount()) { "Wrong inputs dimension." }
+        val inputTensorsCount = getInputTensorCount()
+        require(inputs.size <= inputTensorsCount) { "Wrong inputs dimension. Got ${inputs.size} when $inputTensorsCount required" }
 
         inputs.forEachIndexed { index, any ->
             val inputTensor = getInputTensor(index)

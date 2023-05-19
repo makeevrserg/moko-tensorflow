@@ -7,7 +7,7 @@ import org.jetbrains.kotlin.konan.target.KonanTarget
 plugins {
     id("dev.icerock.moko.gradle.multiplatform.mobile")
     id("dev.icerock.mobile.multiplatform.ios-framework")
-//    id("dev.icerock.mobile.multiplatform.cocoapods")
+    id("dev.icerock.mobile.multiplatform.cocoapods")
     id("dev.icerock.mobile.multiplatform-resources")
     id("dev.icerock.moko.gradle.detekt")
 }
@@ -28,11 +28,11 @@ multiplatformResources {
     multiplatformResourcesPackage = "dev.icerock.moko.sample.tensorflowtest"
 }
 
-//cocoaPods {
-//    podsProject = file("../ios-app/Pods/Pods.xcodeproj")
-//
-//    pod("TensorFlowLiteObjC", module = "TFLTensorFlowLite", onlyLink = true)
-//}
+cocoaPods {
+    podsProject = file("../ios-app/Pods/Pods.xcodeproj")
+
+    pod("TensorFlowLiteObjC", module = "TFLTensorFlowLite", onlyLink = true)
+}
 
 framework {
     export(projects.tensorflow)
