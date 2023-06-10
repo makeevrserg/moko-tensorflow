@@ -1,6 +1,9 @@
 package dev.icerock.moko.tensorflow
 
-inline class TensorShape(
+import kotlin.jvm.JvmInline
+
+@JvmInline
+value class TensorShape(
     val dimensions: IntArray
 ) {
     val rank: Int
