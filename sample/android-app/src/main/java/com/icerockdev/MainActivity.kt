@@ -4,17 +4,17 @@
 
 package com.icerockdev
 
+import android.annotation.SuppressLint
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
 import android.view.MotionEvent
-import android.widget.Button
-import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
-import com.divyanshu.draw.widget.DrawView
+import com.icerockdev.databinding.ActivityMainBinding
 import com.icerockdev.library.ResHolder
 import com.icerockdev.library.TFDigitClassifier
+import dev.icerock.moko.sample.tensorflowtest.MR
 import dev.icerock.moko.tensorflow.Interpreter
 import dev.icerock.moko.tensorflow.InterpreterOptions
 import java.nio.ByteBuffer
@@ -23,35 +23,41 @@ import java.util.concurrent.atomic.AtomicBoolean
 
 @Suppress("MagicNumber")
 class MainActivity : AppCompatActivity() {
+    private var binding: ActivityMainBinding? = null
 
-    private lateinit var drawView: DrawView
-    private lateinit var clearButton: Button
-    private lateinit var predictedTextView: TextView
+    private val interpreter: Interpreter by lazy {
+        Interpreter(
+            ResHolder.getDigitsClassifierModel(),
+            InterpreterOptions(2, useNNAPI = true),
+            this
+        ).also { isInterpreterInitialized.set(true) }
+    }
 
-    private lateinit var interpreter: Interpreter
-    private lateinit var digitClassifier: TFDigitClassifier
+    private val digitClassifier: TFDigitClassifier by lazy {
+        TFDigitClassifier(interpreter, this.lifecycleScope)
+    }
 
-    private val isInterpreterInited = AtomicBoolean(false)
+    private val isInterpreterInitialized = AtomicBoolean(false)
 
+    @SuppressLint("ClickableViewAccessibility")
     @Suppress("UnnecessarySafeCall")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        val binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        this.binding = binding
 
-        drawView = findViewById(R.id.draw_view)
-        drawView.setStrokeWidth(70.0f)
-        drawView.setColor(Color.WHITE)
-        drawView.setBackgroundColor(Color.BLACK)
-        clearButton = findViewById(R.id.clear_button)
-        predictedTextView = findViewById(R.id.predicted_text)
+        binding.drawView.setStrokeWidth(70.0f)
+        binding.drawView.setColor(Color.WHITE)
+        binding.drawView.setBackgroundColor(Color.BLACK)
 
-        clearButton.setOnClickListener {
-            drawView.clearCanvas()
-            predictedTextView.text = "Please draw a digit"
+        binding.clearButton.setOnClickListener {
+            binding.drawView.clearCanvas()
+            binding.predictedText.setText(MR.strings.draw_digit.resourceId)
         }
 
-        drawView?.setOnTouchListener { _, event ->
-            drawView?.onTouchEvent(event)
+        binding.drawView.setOnTouchListener { _, event ->
+            binding.drawView.onTouchEvent(event)
 
             if (event.action == MotionEvent.ACTION_UP) {
                 classifyDrawing()
@@ -60,22 +66,19 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        interpreter = Interpreter(ResHolder.getDigitsClassifierModel(), InterpreterOptions(2, useNNAPI = true), this)
-        digitClassifier = TFDigitClassifier(interpreter, this.lifecycleScope)
-
         digitClassifier.initialize()
-        isInterpreterInited.set(true)
     }
 
     override fun onDestroy() {
         super.onDestroy()
+        binding = null
         interpreter.close()
     }
 
     private fun classifyDrawing() {
-        if (!isInterpreterInited.get()) return
+        if (!isInterpreterInitialized.get()) return
 
-        val rawBitmap = drawView.getBitmap()
+        val rawBitmap = binding?.drawView?.getBitmap() ?: return
         val bitmapToClassify = Bitmap.createScaledBitmap(
             rawBitmap,
             digitClassifier.inputImageWidth,
@@ -85,7 +88,7 @@ class MainActivity : AppCompatActivity() {
 
         digitClassifier.classifyAsync(convertBitmapToByteBuffer(bitmapToClassify)) {
             runOnUiThread {
-                predictedTextView.text = it
+                binding?.predictedText?.text = it
             }
         }
     }
