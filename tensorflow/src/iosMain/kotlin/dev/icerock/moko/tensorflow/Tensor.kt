@@ -30,17 +30,15 @@ actual class Tensor(
 
 private fun TFLTensorDataType.toTensorDataType() = when (this) {
     TFLTensorDataType.TFLTensorDataTypeFloat32 -> TensorDataType.FLOAT32
-    TFLTensorDataType.TFLTensorDataTypeInt32 -> TensorDataType.INT32
-    TFLTensorDataType.TFLTensorDataTypeUInt8 -> TensorDataType.UINT8
-    TFLTensorDataType.TFLTensorDataTypeInt64 -> TensorDataType.INT64
-    TFLTensorDataType.TFLTensorDataTypeInt16 -> TensorDataType.INT16
-    TFLTensorDataType.TFLTensorDataTypeInt8 -> TensorDataType.INT8
-    TFLTensorDataType.TFLTensorDataTypeBool ->
-        throw IllegalArgumentException("TFLTensorDataTypeFloat16 not supported.")
-    TFLTensorDataType.TFLTensorDataTypeFloat16 ->
-        throw IllegalArgumentException("TFLTensorDataTypeFloat16 not supported.")
-    TFLTensorDataType.TFLTensorDataTypeNoType ->
-        throw IllegalArgumentException("TFLTensorDataTypeNoType: wrong tensor type.")
+
+    TFLTensorDataType.TFLTensorDataTypeBool,
+    TFLTensorDataType.TFLTensorDataTypeFloat16,
+    TFLTensorDataType.TFLTensorDataTypeNoType,
+    TFLTensorDataType.TFLTensorDataTypeInt8,
+    TFLTensorDataType.TFLTensorDataTypeInt16,
+    TFLTensorDataType.TFLTensorDataTypeInt64,
+    TFLTensorDataType.TFLTensorDataTypeUInt8,
+    TFLTensorDataType.TFLTensorDataTypeInt32 -> error("$this not supported.")
 
     else -> throw IllegalArgumentException("unknown TFLTensorDataType - $this")
 }

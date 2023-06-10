@@ -5,21 +5,20 @@
 package dev.icerock.moko.tensorflow
 
 import dev.icerock.moko.resources.FileResource
+import dev.icerock.moko.tensorflow.mappers.FloatArrayMapper
 import platform.Foundation.NSData
 
 @Suppress("ForbiddenComment")
 actual class Interpreter(
     actual val fileResource: FileResource,
-    actual val options: InterpreterOptions
+    actual val options: InterpreterOptions,
 ) {
 
-    private val tflInterpreter: PlatformInterpreter
+    private val tflInterpreter: PlatformInterpreter = errorHandled { errPtr ->
+        PlatformInterpreter(fileResource.path, options.tflInterpreterOptions, errPtr)
+    }!!
 
     init {
-        tflInterpreter = errorHandled { errPtr ->
-            PlatformInterpreter(fileResource.path, options.tflInterpreterOptions, errPtr)
-        }!!
-
         errorHandled { errPtr ->
             tflInterpreter.allocateTensorsWithError(errPtr)
         }
@@ -85,36 +84,31 @@ actual class Interpreter(
         inputs: List<Any>,
         outputs: Map<Int, Any>
     ) {
-//        require(inputs.size > getInputTensorCount()) { "Wrong inputs dimension." }
+        require(inputs.size <= getInputTensorCount()) { "Wrong inputs dimension." }
+        inputs.forEach { input -> require(input is NSData) { "ios Interpreter only accept NSData as an input." } }
+        val nsInputs = inputs.map { it as NSData }
 
-        inputs.forEachIndexed { index, any ->
+        nsInputs.forEachIndexed { index, nsData ->
             val inputTensor = getInputTensor(index)
             errorHandled { errPtr ->
                 inputTensor.platformTensor.copyData(
-                    any as NSData,
+                    nsData,
                     errPtr
-                ) // Fixme: hardcast Any to NSData
+                )
             }
         }
 
-        errorHandled { errPtr ->
-            tflInterpreter.invokeWithError(errPtr)
-        }
+        errorHandled { errPtr -> tflInterpreter.invokeWithError(errPtr) }
 
-        inputs.forEachIndexed { index, any ->
+        nsInputs.forEachIndexed { index, _ ->
             val outputTensor = getOutputTensor(index)
-
             val array = when (outputTensor.dataType) {
-                TensorDataType.FLOAT32 -> {
-                    errorHandled { errPtr ->
-                        outputTensor.platformTensor.dataWithError(errPtr)
-                    }!!.toUByteArray().toFloatArray()
-                }
+                FloatArrayMapper.type -> FloatArrayMapper.map(outputTensor.platformTensor)
                 else -> error("Type ${outputTensor.dataType} not implemented ")
             }
             println("SWIFT_ARRAY: ${(array.toList())}")
 
-            (outputs[0] as Array<Any>)[0] = array // TODO: hardcoded case, works only with digits sample
+            (outputs[0] as Array<Any>)[index] = array
         }
     }
 
