@@ -22,6 +22,8 @@ internal fun <T> errorHandled(block: (CPointer<ObjCObjectVar<NSError?>>) -> T?):
         val errorPtr = alloc<ObjCObjectVar<NSError?>>()
         runCatching {
             block(errorPtr.ptr)
+        }.onFailure {
+            it.printStackTrace()
         }.getOrNull() to errorPtr.value
     }
     if (error != null) throw Exception(error.description)

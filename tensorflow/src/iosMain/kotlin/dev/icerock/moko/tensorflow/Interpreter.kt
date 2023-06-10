@@ -85,7 +85,7 @@ actual class Interpreter(
         inputs: List<Any>,
         outputs: Map<Int, Any>
     ) {
-        require(inputs.size > getInputTensorCount()) { "Wrong inputs dimension." }
+//        require(inputs.size > getInputTensorCount()) { "Wrong inputs dimension." }
 
         inputs.forEachIndexed { index, any ->
             val inputTensor = getInputTensor(index)
@@ -110,15 +110,11 @@ actual class Interpreter(
                         outputTensor.platformTensor.dataWithError(errPtr)
                     }!!.toUByteArray().toFloatArray()
                 }
-                TensorDataType.INT32 -> IntArray(outputTensor.dataType.byteSize()) // Fixme:
-                TensorDataType.UINT8 -> UIntArray(outputTensor.dataType.byteSize()) // Fixme:
-                TensorDataType.INT64 -> LongArray(outputTensor.dataType.byteSize()) // Fixme:
-                TensorDataType.INT16 -> ShortArray(outputTensor.dataType.byteSize()) // TODO()
-                TensorDataType.INT8 -> ByteArray(outputTensor.dataType.byteSize()) // TODO()
+                else -> error("Type ${outputTensor.dataType} not implemented ")
             }
+            println("SWIFT_ARRAY: ${(array.toList())}")
 
-            (outputs[0] as Array<Any>)[0] =
-                array // TODO: hardcoded case, works only with digits sample
+            (outputs[0] as Array<Any>)[0] = array // TODO: hardcoded case, works only with digits sample
         }
     }
 
