@@ -5,8 +5,6 @@
 package dev.icerock.moko.tensorflow
 
 import dev.icerock.moko.resources.FileResource
-import dev.icerock.moko.tensorflow.map.Float32Mapper
-import platform.Foundation.NSData
 
 @Suppress("ForbiddenComment")
 class ObjCInterpreter(
@@ -75,66 +73,23 @@ class ObjCInterpreter(
         }
     }
 
-    /**
-     * Runs model inference if the model takes multiple inputs, or returns multiple outputs.
-     *
-     * TODO: need to implement [outputs] applying.
-     */
-    override fun run(
-        inputs: Array<*>,
-        outputs: Map<Int, Any>
-    ) {
-        require(outputs.size == 1) {
-            "Output map should have the { 0: Array<Any> } structure"
-        }
-        require(outputs.containsKey(Interpreter.OUTPUT_KEY)) {
-            "Output map should have the { 0: Array<Any> } structure"
-        }
-        require(outputs[Interpreter.OUTPUT_KEY] is Array<*>) {
-            "Output map 0's key value is not Array<*>. Output map should have the{ 0: Array<Any> } structure"
-        }
+    override fun run(inputs: Map<Int, NativeInput>, outputs: MutableMap<Int, Any>) {
         require(inputs.size <= getInputTensorCount()) {
             "Wrong inputs dimension."
         }
-        inputs.forEach { input ->
-            require(input is NSData) {
-                "ios interpterer only accpept NSData as an input"
+        errorHandled { errorPointer ->
+            tflInterpreter.allocateTensorsWithError(errorPointer)
+            inputs.forEach {
+                val tflTensor = tflInterpreter.inputTensorAtIndex(it.key.toULong(), errorPointer)!!
+                tflTensor.copyData(it.value.nsData, errorPointer)
+            }
+            tflInterpreter.invokeWithError(errorPointer)
+            outputs.keys.forEach {
+                val outputTensor = getOutputTensor(it)
+                val data = outputTensor.platformTensor.dataWithError(errorPointer)!!
+                outputs[it] = data
             }
         }
-        val nsInputs = inputs.map { it as NSData }
-        val outputArray = outputs[Interpreter.OUTPUT_KEY] as Array<Any>
-        // Filling input tensors of our interpreter with nsData
-        nsInputs.forEachIndexed { index, nsData ->
-            val inputTensor = getInputTensor(index)
-            errorHandled { errPtr ->
-                inputTensor.platformTensor.copyData(
-                    nsData,
-                    errPtr
-                )
-            }
-        }
-        errorHandled { errPtr ->
-            tflInterpreter.invokeWithError(errPtr)
-        }
-        // Here we can get our output data
-        nsInputs.indices.forEach { index ->
-            val outputTensor = getOutputTensor(index)
-
-            val array = when (outputTensor.dataType) {
-                TensorDataType.FLOAT32 -> Float32Mapper.map(outputTensor.platformTensor)
-
-                else -> error("ObjCInterpreter doesn't have convertor for ${outputTensor.dataType} yet")
-            }
-            // ~~TODO: hardcoded case, works only with digits sample~~
-            // Actually works with every shape, which contract the [N,X,Y,...,Z]. Where N is batch size
-            outputArray[index] = array
-        }
-    }
-
-    override fun run(nativeInput: NativeInput, output: Array<*>) {
-        val inputs = arrayOf(nativeInput.nsData) as Array<*>
-        val outputs = mapOf(Interpreter.OUTPUT_KEY to output)
-        run(inputs, outputs)
     }
 
     /**

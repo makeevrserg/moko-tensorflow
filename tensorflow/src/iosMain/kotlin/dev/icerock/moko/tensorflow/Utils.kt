@@ -17,7 +17,7 @@ import platform.Foundation.NSError
 import platform.posix.memcpy
 
 @Suppress("TooGenericExceptionThrown")
-internal fun <T> errorHandled(block: (CPointer<ObjCObjectVar<NSError?>>) -> T?): T? {
+fun <T> errorHandled(block: (CPointer<ObjCObjectVar<NSError?>>) -> T?): T? {
     val (result, error) = memScoped {
         val errorPtr = alloc<ObjCObjectVar<NSError?>>()
         // need somehow to print trace
@@ -29,16 +29,8 @@ internal fun <T> errorHandled(block: (CPointer<ObjCObjectVar<NSError?>>) -> T?):
     return result
 }
 
-internal fun NSData.toUByteArray(): UByteArray = UByteArray(this.length.toInt()).apply {
+fun NSData.toUByteArray(): UByteArray = UByteArray(this.length.toInt()).apply {
     usePinned {
         memcpy(it.addressOf(0), this@toUByteArray.bytes, this@toUByteArray.length)
     }
-}
-
-@Suppress("MagicNumber")
-internal fun bytesToIntBits(bytes: List<Byte>): Int {
-    return (bytes[0].toInt() shl 24)
-        .or(bytes[1].toInt() and 0xFF shl 16)
-        .or(bytes[2].toInt() and 0xFF shl 8)
-        .or(bytes[3].toInt() and 0xFF)
 }

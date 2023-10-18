@@ -11,7 +11,7 @@ class ViewController: UIViewController, SketchViewDelegate {
     @IBOutlet weak var sketchView: SketchView!
     @IBOutlet weak var resultLabel: UILabel!
     
-    private var interpreter: Interpreter?
+    private var objCInterpreter: Interpreter?
     private var tfDigitClassifier: TFDigitClassifier?
     
     private var isInterpreterInited: Bool = false
@@ -29,11 +29,12 @@ class ViewController: UIViewController, SketchViewDelegate {
         )
         let modelFileRes: ResourcesFileResource = ResHolder().getDigitsClassifierModel()
         
-        interpreter = ObjCInterpreter(
+        objCInterpreter = ObjCInterpreter(
             fileResource: modelFileRes,
             options: options
         )
-        tfDigitClassifier = TFDigitClassifier(interpreter: interpreter!, scope: scope!)
+        let interpreter = DigitInterpreter(instance: objCInterpreter!)
+        tfDigitClassifier = TFDigitClassifier(interpreter: interpreter, scope: scope!)
         
         tfDigitClassifier?.initialize()
         self.isInterpreterInited = true
@@ -42,7 +43,7 @@ class ViewController: UIViewController, SketchViewDelegate {
     
     deinit {
         scope?.close()
-        interpreter?.close()
+        objCInterpreter?.close()
     }
 
     @IBAction func tapClear(_ sender: Any) {
@@ -71,8 +72,8 @@ class ViewController: UIViewController, SketchViewDelegate {
         
         let rgbData = drawing!.scaledData(with: CGSize(width: Int(tfDigitClassifier.inputImageWidth), height: Int(tfDigitClassifier.inputImageHeight)))
         
-        
-        tfDigitClassifier.classifyAsync(inputData: rgbData) { (String) in
+        let inputData = NativeInput(nsData: rgbData!)
+        tfDigitClassifier.classifyNativeAsync(nativeInput: inputData) { (String) in
             DispatchQueue.main.async {
                 self.resultLabel.text = String
             }

@@ -30,21 +30,12 @@ class TFDigitClassifier(
         interpreter.allocateTensors()
     }
 
-    fun classifyAsync(inputData: Any, onResult: (String) -> Unit) {
-        scope.launch(Dispatchers.Default) {
-            val result = Array(1) { FloatArray(OUTPUT_CLASSES_COUNT) }
-            interpreter.run(arrayOf(inputData), mapOf(Pair(0, result)))
-
-            val maxIndex = result[0].indices.maxByOrNull { result[0][it] } ?: -1
-            val strResult = "Prediction Result: $maxIndex\nConfidence: ${result[0][maxIndex]}"
-
-            onResult(strResult)
-        }
-    }
     fun classifyNativeAsync(nativeInput: NativeInput, onResult: (String) -> Unit) {
         scope.launch(Dispatchers.Default) {
-            val result = Array(1) { FloatArray(OUTPUT_CLASSES_COUNT) }
-            interpreter.run(nativeInput, result)
+            val input = mapOf(0 to nativeInput)
+            val output: MutableMap<Int, Any> = mutableMapOf(0 to Array(1) { FloatArray(OUTPUT_CLASSES_COUNT) })
+            interpreter.run(input, output)
+            val result = output[0] as Array<FloatArray>
 
             val maxIndex = result[0].indices.maxByOrNull { result[0][it] } ?: -1
             val strResult = "Prediction Result: $maxIndex\nConfidence: ${result[0][maxIndex]}"

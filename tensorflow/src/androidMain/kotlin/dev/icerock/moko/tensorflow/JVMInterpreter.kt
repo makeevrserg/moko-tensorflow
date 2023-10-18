@@ -62,14 +62,11 @@ class JVMInterpreter(
     /**
      * Runs model inference if the model takes multiple inputs, or returns multiple outputs.
      */
-    override fun run(inputs: Array<*>, outputs: Map<Int, Any>) {
-        tensorFlowInterpreter.runForMultipleInputsOutputs(inputs, outputs)
-    }
-
-    override fun run(nativeInput: NativeInput, output: Array<*>) {
-        val inputs = arrayOf(nativeInput.byteBuffer)
-        val outputs = mapOf(Interpreter.OUTPUT_KEY to output)
-        run(inputs, outputs)
+    override fun run(inputs: Map<Int, NativeInput>, outputs: MutableMap<Int, Any>) {
+        val anyInputs = inputs
+            .toList()
+            .associate { (k, v) -> k to v.byteBuffer }
+        tensorFlowInterpreter.runForMultipleInputsOutputs(Array(anyInputs.size) { i -> anyInputs[i] }, outputs)
     }
 
     /**
