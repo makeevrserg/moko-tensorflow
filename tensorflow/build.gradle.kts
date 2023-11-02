@@ -1,24 +1,61 @@
+@file:Suppress("UnusedPrivateMember")
+
+import ru.astrainteractive.gradleplugin.util.ProjectProperties.projectInfo
+
 /*
  * Copyright 2020 IceRock MAG Inc. Use of this source code is governed by the Apache 2.0 license.
  */
 
 plugins {
-    id("dev.icerock.moko.gradle.multiplatform.mobile")
-    id("dev.icerock.mobile.multiplatform.cocoapods")
-    id("dev.icerock.moko.gradle.publication")
-    id("dev.icerock.moko.gradle.stub.javadoc")
-    id("dev.icerock.moko.gradle.detekt")
+    alias(libs.plugins.kotlin.multiplatform)
+    alias(libs.plugins.android.library)
+    alias(klibs.plugins.klibs.gradle.java.core)
+    alias(klibs.plugins.klibs.gradle.android.core)
+    alias(klibs.plugins.klibs.gradle.publication)
+    kotlin("native.cocoapods")
 }
 
-dependencies {
-    commonMainImplementation(libs.mokoResources)
+kotlin {
+    targetHierarchy.default()
 
-    androidMainImplementation(libs.appCompat)
-    androidMainImplementation(libs.tensorflowLite)
+    androidTarget()
+    ios()
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
+
+    cocoapods {
+        summary = projectInfo.name
+        homepage = projectInfo.url
+        version = projectInfo.versionString
+        ios.deploymentTarget = "16.0"
+        source = "https://github.com/icerockdev/moko-tensorflow.git"
+        framework {
+            baseName = "ml"
+            isStatic = false
+        }
+
+        pod("TensorFlowLiteObjC") {
+            moduleName = "TFLTensorFlowLite"
+            version = "2.12.0"
+        }
+    }
+
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(libs.mokoResources)
+            }
+        }
+        val androidMain by getting {
+            dependencies {
+                implementation(libs.appCompat)
+                api(libs.tensorflowLite)
+            }
+        }
+    }
 }
 
-cocoaPods {
-    podsProject = file("../sample/ios-app/Pods/Pods.xcodeproj")
-
-    pod("TensorFlowLiteObjC", module = "TFLTensorFlowLite")
+android {
+    namespace = "dev.icerock.moko.tensorflow"
 }

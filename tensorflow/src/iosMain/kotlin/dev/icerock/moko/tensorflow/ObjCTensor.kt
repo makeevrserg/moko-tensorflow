@@ -4,19 +4,21 @@
 
 package dev.icerock.moko.tensorflow
 
-import cocoapods.TFLTensorFlowLite.TFLTensorDataType
+import cocoapods.TensorFlowLiteObjC.TFLTensorDataType
+import kotlinx.cinterop.ExperimentalForeignApi
 import platform.Foundation.NSNumber
 
-actual class Tensor(
+@OptIn(ExperimentalForeignApi::class)
+class ObjCTensor(
     internal val platformTensor: PlatformTensor
-) {
-    actual val dataType: TensorDataType
+) : Tensor {
+    override val dataType: TensorDataType
         get() = platformTensor.dataType.toTensorDataType()
 
-    actual val name: String
+    override val name: String
         get() = platformTensor.name()
 
-    actual val shape: IntArray
+    override val shape: IntArray
         get() {
             val rawShapeArr = errorHandled { errPtr ->
                 platformTensor.shapeWithError(errPtr)
@@ -37,8 +39,10 @@ private fun TFLTensorDataType.toTensorDataType() = when (this) {
     TFLTensorDataType.TFLTensorDataTypeInt8 -> TensorDataType.INT8
     TFLTensorDataType.TFLTensorDataTypeBool ->
         throw IllegalArgumentException("TFLTensorDataTypeFloat16 not supported.")
+
     TFLTensorDataType.TFLTensorDataTypeFloat16 ->
         throw IllegalArgumentException("TFLTensorDataTypeFloat16 not supported.")
+
     TFLTensorDataType.TFLTensorDataTypeNoType ->
         throw IllegalArgumentException("TFLTensorDataTypeNoType: wrong tensor type.")
 

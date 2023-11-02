@@ -24,7 +24,7 @@ class ViewController: UIViewController, SketchViewDelegate {
         sketchView.lineColor = UIColor.white
         sketchView.sketchViewDelegate = self
         
-        let options: InterpreterOptions = InterpreterOptions(
+        let options = ObjCInterpreterOptions(
             numThreads: 2
         )
         let modelFileRes: ResourcesFileResource = ResHolder().getDigitsClassifierModel()

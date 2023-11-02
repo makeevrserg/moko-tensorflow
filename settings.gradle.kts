@@ -3,9 +3,13 @@
  */
 
 rootProject.name = "moko-tensorflow"
-
-enableFeaturePreview("VERSION_CATALOGS")
-enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
+pluginManagement {
+    repositories {
+        mavenCentral()
+        google()
+        gradlePluginPortal()
+    }
+}
 
 dependencyResolutionManagement {
     repositories {
@@ -13,10 +17,13 @@ dependencyResolutionManagement {
         google()
 
         // for moko-media dependency MaterialFilePicker
-        maven { url = uri("https://jitpack.io") }
+        maven("https://jitpack.io")
     }
+    versionCatalogs { create("klibs") { from(files("./gradle/klibs.versions.toml")) } }
 }
 
+enableFeaturePreview("VERSION_CATALOGS")
+enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 include(":tensorflow")
 include(":sample:android-app")

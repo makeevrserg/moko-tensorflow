@@ -4,4 +4,6 @@
 
 package dev.icerock.moko.tensorflow
 
-expect class InterpreterOptions(numThreads: Int)
+interface InterpreterOptions {
+    val numThreads: Int
+}

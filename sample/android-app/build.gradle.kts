@@ -1,21 +1,28 @@
+
+import ru.astrainteractive.gradleplugin.util.ProjectProperties.projectInfo
+
 /*
  * Copyright 2020 IceRock MAG Inc. Use of this source code is governed by the Apache 2.0 license.
  */
 
 plugins {
-    id("dev.icerock.moko.gradle.android.application")
-    id("dev.icerock.moko.gradle.detekt")
+    id("kotlin-android")
+    alias(libs.plugins.android.application)
+    alias(klibs.plugins.klibs.gradle.java.core)
+    alias(klibs.plugins.klibs.gradle.android.core)
 }
 
 android {
+    namespace = "com.icerockdev"
     dexOptions {
         javaMaxHeapSize = "2g"
     }
+
     defaultConfig {
         applicationId = "dev.icerock.moko.samples.tensorflow"
-
         versionCode = 1
-        versionName = "0.1.0"
+        versionName = projectInfo.versionString
+        setProperty("archivesBaseName", "${projectInfo.name}-${projectInfo.versionString}")
     }
 }
 

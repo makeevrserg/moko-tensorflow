@@ -5,11 +5,13 @@
 package dev.icerock.moko.tensorflow
 
 import dev.icerock.moko.resources.FileResource
+import kotlinx.cinterop.ExperimentalForeignApi
 
 @Suppress("ForbiddenComment")
+@OptIn(ExperimentalForeignApi::class)
 class ObjCInterpreter(
     override val fileResource: FileResource,
-    override val options: InterpreterOptions
+    override val options: ObjCInterpreterOptions
 ) : Interpreter {
 
     private val tflInterpreter: PlatformInterpreter = errorHandled { errPtr ->
@@ -36,10 +38,10 @@ class ObjCInterpreter(
      * @throws IllegalArgumentException if [index] is negative or is not smaller than the
      * number of model inputs.
      */
-    override fun getInputTensor(index: Int): Tensor {
+    override fun getInputTensor(index: Int): ObjCTensor {
         return errorHandled { errPtr ->
             tflInterpreter.inputTensorAtIndex(index.toULong(), errPtr)
-        }!!.toTensor()
+        }!!.toObjCTensor()
     }
 
     /**
@@ -48,10 +50,10 @@ class ObjCInterpreter(
      * @throws IllegalArgumentException if [index] is negative or is not smaller than the
      * number of model inputs.
      */
-    override fun getOutputTensor(index: Int): Tensor {
+    override fun getOutputTensor(index: Int): ObjCTensor {
         return errorHandled { errPtr ->
             tflInterpreter.outputTensorAtIndex(index.toULong(), errPtr)
-        }!!.toTensor()
+        }!!.toObjCTensor()
     }
 
     /**

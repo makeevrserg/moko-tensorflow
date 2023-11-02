@@ -1,5 +1,9 @@
 [versions]
-kotlinVersion = "1.8.10"
+kotlin-version = "1.9.0"
+kotlin-android-application = "7.4.2"
+moko-resources = "0.22.0"
+kotlin-compose = "1.4.3"
+
 mokoResourcesVersion = "0.22.0"
 mokoMediaVersion = "0.11.0"
 mokoTensorflowVersion = "0.3.0"
@@ -14,7 +18,7 @@ lifecycleRuntimeVersion = "2.6.1"
 
 [libraries]
 appCompat = { module = "androidx.appcompat:appcompat", version = "1.6.1" }
-kotlinStdLib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlinVersion" }
+kotlinStdLib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin-version" }
 constraintLayout = { module = "androidx.constraintlayout:constraintlayout", version = "2.1.4" }
 coreKtx = { module = "androidx.core:core-ktx", version.ref = "coreKtxVersion" }
 playServices = { module = "com.google.android.gms:play-services-tasks", version.ref = "playServicesVersion" }
@@ -26,9 +30,15 @@ mokoMedia = { module = "dev.icerock.moko:media", version.ref = "mokoMediaVersion
 coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutinesVersion" }
 lifecycleRuntime = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeVersion" }
 
-mokoResourcesGenerator = { module = "dev.icerock.moko:resources-generator", version.ref = "mokoResourcesVersion" }
-mokoMultiplatformPlugin = { module = "dev.icerock:mobile-multiplatform", version = "0.14.2" }
-kotlinGradlePlugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlinVersion" }
-androidGradlePlugin = { module = "com.android.tools.build:gradle", version = "7.4.2" }
-detektGradlePlugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version = "1.22.0" }
-mokoGradlePlugin = { module = "dev.icerock.moko:moko-gradle-plugin", version = "0.3.0" }
+[plugins]
+# Kotlin
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin-version" }
+kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin-version" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin-version" }
+kotlin-compose = { id = "org.jetbrains.compose", version.ref = "kotlin-compose" }
+
+# Android
+android-library = { id = "com.android.library", version.ref = "kotlin-android-application" }
+android-application = { id = "com.android.application", version.ref = "kotlin-android-application" }
+
+moko-resources = { id = "dev.icerock.mobile.multiplatform-resources", version.ref = "moko-resources" }

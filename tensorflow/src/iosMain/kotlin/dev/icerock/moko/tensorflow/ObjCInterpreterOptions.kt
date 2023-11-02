@@ -4,9 +4,9 @@
 
 package dev.icerock.moko.tensorflow
 
-import cocoapods.TFLTensorFlowLite.TFLInterpreterOptions
+import cocoapods.TensorFlowLiteObjC.TFLInterpreterOptions
 
-actual class InterpreterOptions actual constructor(numThreads: Int) {
+class ObjCInterpreterOptions(override val numThreads: Int) : InterpreterOptions {
 
     internal val tflInterpreterOptions = TFLInterpreterOptions().apply {
         setNumberOfThreads(numThreads.toULong())

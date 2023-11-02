@@ -4,9 +4,9 @@
 
 package dev.icerock.moko.tensorflow
 
-import cocoapods.TFLTensorFlowLite.TFLTensor
+import cocoapods.TensorFlowLiteObjC.TFLTensor
 import platform.Foundation.NSNumber
 
-internal fun TFLTensor.toTensor() = Tensor(this)
+internal fun TFLTensor.toObjCTensor() = ObjCTensor(this)
 
 internal fun TensorShape.getNSNumberDimensionList() = dimensions.map(::NSNumber)

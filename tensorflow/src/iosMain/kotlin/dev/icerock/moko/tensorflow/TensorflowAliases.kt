@@ -4,8 +4,8 @@
 
 package dev.icerock.moko.tensorflow
 
-import cocoapods.TFLTensorFlowLite.TFLInterpreter
-import cocoapods.TFLTensorFlowLite.TFLTensor
+import cocoapods.TensorFlowLiteObjC.TFLInterpreter
+import cocoapods.TensorFlowLiteObjC.TFLTensor
 
 typealias PlatformTensor = TFLTensor
 typealias PlatformInterpreter = TFLInterpreter

@@ -7,9 +7,9 @@ package dev.icerock.moko.tensorflow
 import android.content.Context
 import dev.icerock.moko.resources.FileResource
 
-class JVMInterpreter(
+class JvmInterpreter(
     override val fileResource: FileResource,
-    override val options: InterpreterOptions,
+    override val options: JvmInterpreterOptions,
     context: Context
 ) : Interpreter {
 
@@ -34,8 +34,8 @@ class JVMInterpreter(
      * @throws IllegalArgumentException if [index] is negative or is not smaller than the
      * number of model inputs.
      */
-    override fun getInputTensor(index: Int): Tensor {
-        return tensorFlowInterpreter.getInputTensor(index).toTensor()
+    override fun getInputTensor(index: Int): JvmTensor {
+        return tensorFlowInterpreter.getInputTensor(index).toJvmTensor()
     }
 
     /**
@@ -44,8 +44,8 @@ class JVMInterpreter(
      * @throws IllegalArgumentException if [index] is negative or is not smaller than the
      * number of model inputs.
      */
-    override fun getOutputTensor(index: Int): Tensor {
-        return tensorFlowInterpreter.getOutputTensor(index).toTensor()
+    override fun getOutputTensor(index: Int): JvmTensor {
+        return tensorFlowInterpreter.getOutputTensor(index).toJvmTensor()
     }
 
     /**
@@ -70,7 +70,7 @@ class JVMInterpreter(
     }
 
     /**
-     * Release resources associated with the [JVMInterpreter].
+     * Release resources associated with the [JvmInterpreter].
      */
     override fun close() {
         tensorFlowInterpreter.close()

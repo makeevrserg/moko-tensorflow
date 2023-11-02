@@ -6,14 +6,14 @@ package dev.icerock.moko.tensorflow
 
 import org.tensorflow.lite.DataType
 
-actual class Tensor(
+class JvmTensor(
     internal val platformTensor: PlatformTensor
-) {
-    actual val dataType: TensorDataType
+) : Tensor {
+    override val dataType: TensorDataType
         get() = platformTensor.dataType().toTensorDataType()
-    actual val name: String
+    override val name: String
         get() = platformTensor.name()
-    actual val shape: IntArray
+    override val shape: IntArray
         get() = platformTensor.shape()
 }
 
@@ -26,6 +26,7 @@ private fun DataType.toTensorDataType() = when (this) {
     DataType.INT16 -> TensorDataType.INT16
     DataType.BOOL ->
         throw IllegalArgumentException("BOOL not supported.")
+
     DataType.STRING ->
         throw IllegalArgumentException("STRING not supported.")
 }

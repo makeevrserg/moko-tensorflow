@@ -1,7 +1,8 @@
 PODS:
   - mokoTensorflow (0.3.0):
     - TensorFlowLiteObjC (= 2.12.0)
-  - MultiPlatformLibrary (0.1.0)
+  - MultiPlatformLibrary (0.3.0):
+    - TensorFlowLiteObjC (= 2.12.0)
   - Sketch (3.0)
   - TensorFlowLiteC (2.12.0):
     - TensorFlowLiteC/Core (= 2.12.0)
@@ -30,7 +31,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   mokoTensorflow: 3b3781b48d0b8822a9a5811f6555be26156f7b4b
-  MultiPlatformLibrary: 91d3837ea2c0943e0713f98671a36913470ef412
+  MultiPlatformLibrary: a2f3f945a38e1de37a160d9be16cd3746869b820
   Sketch: 49a4b71f7bc77316ed5f75ee79dedaa2b844d5e7
   TensorFlowLiteC: 20785a69299185a379ba9852b6625f00afd7984a
   TensorFlowLiteObjC: 9a46a29a76661c513172cfffd3bf712b11ef25c3

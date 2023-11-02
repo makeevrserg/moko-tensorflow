@@ -15,8 +15,8 @@ import androidx.lifecycle.lifecycleScope
 import com.divyanshu.draw.widget.DrawView
 import com.icerockdev.library.ResHolder
 import com.icerockdev.library.TFDigitClassifier
-import dev.icerock.moko.tensorflow.InterpreterOptions
-import dev.icerock.moko.tensorflow.JVMInterpreter
+import dev.icerock.moko.tensorflow.JvmInterpreter
+import dev.icerock.moko.tensorflow.JvmInterpreterOptions
 import dev.icerock.moko.tensorflow.NativeInput
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
@@ -29,7 +29,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var clearButton: Button
     private lateinit var predictedTextView: TextView
 
-    private lateinit var interpreter: JVMInterpreter
+    private lateinit var interpreter: JvmInterpreter
     private lateinit var digitClassifier: TFDigitClassifier
 
     private val isInterpreterInited = AtomicBoolean(false)
@@ -61,7 +61,11 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        interpreter = JVMInterpreter(ResHolder.getDigitsClassifierModel(), InterpreterOptions(2, useNNAPI = true), this)
+        interpreter = JvmInterpreter(
+            ResHolder.getDigitsClassifierModel(),
+            JvmInterpreterOptions(2, useNNAPI = true),
+            this
+        )
         digitClassifier = TFDigitClassifier(interpreter, this.lifecycleScope)
 
         digitClassifier.initialize()

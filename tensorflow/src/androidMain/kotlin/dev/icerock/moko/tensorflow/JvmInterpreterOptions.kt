@@ -4,14 +4,13 @@
 
 package dev.icerock.moko.tensorflow
 
-actual class InterpreterOptions(
-    numThreads: Int,
+class JvmInterpreterOptions(
+    override val numThreads: Int,
     useNNAPI: Boolean = false,
     allowFp16PrecisionForFp32: Boolean = false,
     allowBufferHandleOutput: Boolean = false,
     delegates: List<Delegate> = emptyList()
-) {
-    actual constructor(numThreads: Int) : this(numThreads, false)
+) : InterpreterOptions {
 
     internal val tensorFlowInterpreterOptions = PlatformInterpreterOptions()
         .setNumThreads(numThreads)

@@ -4,7 +4,7 @@
 
 package dev.icerock.moko.tensorflow
 
-expect class Tensor {
+interface Tensor {
     val dataType: TensorDataType
     val name: String
     val shape: IntArray
